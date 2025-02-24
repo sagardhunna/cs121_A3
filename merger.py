@@ -1,6 +1,6 @@
 # open all three partial index files so we can iterate through them
 with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1, open("partial_indexes/partial_index_2.txt", "r", encoding="utf-8") as file2, open("partial_indexes/partial_index_3.txt", "r", encoding="utf-8") as file3:
-    writer = open("inverse_index","at")
+    writer = open("inverse_index","wt")
     # create an iterator for each file that we will use to loop through each file
     part1 = iter(file1)
     part2 = iter(file2)
@@ -12,23 +12,31 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
     switch3 = False
 
     #init 3 strings that will store a line from each file
-    line1 = ""
-    line2 = ""
-    line3 = ""
+    line1 = next(part1)
+    line2 = next(part2)
+    line3 = next(part3)
 
     count = 0
 
     #loop until EOF on all files
     while True:
-        
+
         if switch1 and switch2 and switch3:
             print("finished?")
             break
+        
         count += 1
+        # set all words to be blank becuase once we are end of file, we do no want to split the string anymore
+        word1 = ""
+        word2 = ""
+        word3 = ""
 
-        word1 = line1.split()[0]
-        word2 = line2.split()[0]
-        word3 = line3.split()[0]
+        if line1 != "":
+            word1 = line1.split()[0]
+        if line2 != "":
+            word2 = line2.split()[0]
+        if line3 != "":
+            word3 = line3.split()[0]
 
         if word1 < word2 and word1 < word3:
             writer.write(line1)

@@ -66,7 +66,7 @@ def main():
 
     print(f'Docs indexed: {total_file_number}')
     print(f'Token Unique Tokens: {unique_keys}')
-    print(f'Testing.txt file size: {os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")}')
+    print(f'Testing.txt file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
 
 if __name__ == "__main__":
