@@ -117,7 +117,7 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
                     line3 = ""
                     switch3 = True
                 continue
-        if word1 != "":
+            
             if word2==word3: #2==3
                 writer.write(line2+line3[len(word3):])
                 try:
@@ -132,5 +132,31 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
                     line3 = ""
                     switch3 = True
                 continue
+        if word1 > word2 and word1 > word3:
+            writer.write(line1)
+            try:
+                line1 = next(part1).strip()
+            except StopIteration:
+                line1 = ""
+                switch1 = True
+            continue
+
+        if word2 > word1 and word2 > word3:
+            writer.write(line2)
+            try:
+                line2 = next(part2).strip()
+            except StopIteration:
+                line2 = ""
+                switch2 = True
+            continue
+        
+        if word3 > word1 and word3 > word2:
+            writer.write(line3)
+            try:
+                line3 = next(part3).strip()
+            except StopIteration:
+                line3 = ""
+                switch3 = True
+            continue
     writer.close()
     print(count)
