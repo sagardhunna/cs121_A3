@@ -14,7 +14,7 @@ unique_keys = 0
 # {word: [(doc#, freq)]}
 # map with key = token and value being a set of tuples (doc, frequency)
 def main():
-    global stemmer, file_number, total_file_number, partial_index_num
+    global stemmer, file_number, total_file_number, partial_index_num, unique_keys
 
     token_map = {}
     for dirpath, dirnames, filenames in os.walk("developer"):
