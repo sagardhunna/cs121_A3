@@ -3,6 +3,8 @@ import os
 from nltk.stem import PorterStemmer
 from bs4 import BeautifulSoup
 from tokenizeAndStem import tokenize
+from collections import OrderedDict
+
 
 stemmer = PorterStemmer()
 file_number = 0
@@ -34,6 +36,7 @@ def main():
                 # visible_text is a list of all tokens in file
             if file_number == 19000:
                 file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
+                token_map = OrderedDict(sorted(token_map.items()))
                 with open(file_path, 'w') as f:
                     for key, value in token_map.items():
                         f.write(f'{key}')
@@ -48,6 +51,7 @@ def main():
                 partial_index_num += 1
 
     file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
+    token_map = OrderedDict(sorted(token_map.items()))
     with open(file_path, 'w') as f:
         for key, value in token_map.items():
             f.write(f'{key}')
@@ -62,7 +66,7 @@ def main():
 
     print(f'Docs indexed: {total_file_number}')
     print(f'Token Unique Tokens: {unique_keys}')
-    print(f'Testing.txt file size: {os.path.getsize("partial_index_1.txt") + os.path.getsize("partial_index_2.txt") + os.path.getsize("partial_index_3.txt")}')
+    print(f'Testing.txt file size: {os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")}')
 
 
 if __name__ == "__main__":

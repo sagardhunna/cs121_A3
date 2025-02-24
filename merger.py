@@ -1,5 +1,5 @@
 # open all three partial index files so we can iterate through them
-with open("partial_index_1", "r", encoding="utf-8") as file1, open("partial_index_2", "r", encoding="utf-8") as file2, open("partial_index_3", "r", encoding="utf-8") as file3:
+with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1, open("partial_indexes/partial_index_2.txt", "r", encoding="utf-8") as file2, open("partial_indexes/partial_index_3.txt", "r", encoding="utf-8") as file3:
     writer = open("inverse_index","at")
     # create an iterator for each file that we will use to loop through each file
     part1 = iter(file1)
