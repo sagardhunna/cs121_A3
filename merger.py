@@ -20,7 +20,7 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
 
     #loop until EOF on all files
     while True:
-
+        print(f'Count: {count}')
         if switch1 and switch2 and switch3:
             print("finished?")
             break
@@ -37,6 +37,8 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
             word2 = line2.split()[0]
         if line3 != "":
             word3 = line3.split()[0]
+
+        print(f'Word1: {word1} -- Word2: {word2} -- Word3: {word3}')
 
         if word1!="":
             if word1 < word2 and word1 < word3:
