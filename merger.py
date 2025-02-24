@@ -56,7 +56,7 @@ with open("partial_indexes/partial_index_1.txt", "r", encoding="utf-8") as file1
                     line2 = ""
                     switch2 = True
                 continue
-        if word2!="":
+        if word3!="":
             if word3 < word1 and word3 < word2:
                 writer.write(line3)
                 try:
