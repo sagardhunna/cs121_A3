@@ -11,19 +11,24 @@ import re
 
 
 # stemmer is a global variable that is used in tokenize, prevents us from reinitializing it everytime tokenize is called
-stemmer = PorterStemmer()
 
-
-def tokenize(visible_text, doc_name, token_map): # takes in a file path and returns a List<Token>
-    global stemmer
+def tokenize(visible_text, doc_name, token_map, stemmer): # takes in a file path and returns a List<Token>
     delimiters = r"[^a-zA-Z0-9]" 
+
     '''
+    Example of how token_map loooks
     {
         word: [{doc_name: freq1}, {doc_name2: freq}]
     }
     '''
 
     temp_map = {}
+    '''
+    Example of how temp_map looks
+    {
+        word1: freq1,
+        word2: freq2
+    }'''
 
     # create a map of word: freq, which we will append to the MAIN TOKEN_MAP at the end after counting frequencies
     some_tokens = re.split(delimiters, visible_text)

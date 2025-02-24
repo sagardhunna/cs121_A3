@@ -26,11 +26,12 @@ def main():
                 continue
             print(f'File we are looking at: File #{file_number}')
             with open(actual_rel_name,"r") as file:
+                # IMPLEMENT WEIGHTS OF IMPORTANCE FOR H1/H2/H3
                 jsonObj = json.load(file) 
                 soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
                 visible_text = soup.getText(" ")
                 doc_name = "doc" + str(total_file_number + 1)
-                tokenize(visible_text, doc_name, token_map)
+                tokenize(visible_text, doc_name, token_map, stemmer)
                 file_number += 1
                 total_file_number += 1
                 # visible_text is a list of all tokens in file
