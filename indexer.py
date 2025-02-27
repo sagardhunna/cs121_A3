@@ -74,7 +74,6 @@ def main():
                 file_number += 1
                 total_file_number += 1
                 # visible_text is a list of all tokens in file
-            if file_number == 1000:
                 '''
                 file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
                 token_map = OrderedDict(sorted(token_map.items()))
@@ -92,12 +91,6 @@ def main():
                 token_map.clear()
                 partial_index_num += 1
                 '''
-                # file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
-                create_partial_index()
-                # token_map.clear()
-                return
-
-
     '''
     file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
     token_map = OrderedDict(sorted(token_map.items()))
