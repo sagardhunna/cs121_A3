@@ -43,11 +43,19 @@ def tokenize(visible_text, doc_name, token_map, stemmer): # takes in a file path
             temp_map[word] = 1
     
     # using the previous map of words and frequencies, append to our main token_map array of hashes
+    # Merge into the global token_map
     for key, value in temp_map.items():
         if key in token_map:
-            token_map[key].append({doc_name: value})
+            found = False
+            for entry in token_map[key]:
+                if doc_name in entry:
+                    entry[doc_name] += value  # word was found before
+                    found = True
+                    break
+            if not found:
+                token_map[key].append({doc_name: value})
         else:
-            token_map[key] = [{doc_name: value}]
+            token_map[key] = [{doc_name: value}]  # word never found before
 
 
 

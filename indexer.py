@@ -69,10 +69,10 @@ def main():
                 jsonObj = json.load(file) 
                 soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
                 visible_text = soup.getText(" ")
-                doc_name = "doc" + str(total_file_number + 1)
+                doc_name = "doc" + str(file_number + 1)
                 tokenize(visible_text, doc_name, token_map, stemmer)
                 file_number += 1
-                # total_file_number += 1
+                total_file_number += 1
                 # visible_text is a list of all tokens in file
             if file_number == 1000:
                 '''
@@ -94,7 +94,7 @@ def main():
                 '''
                 # file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
                 create_partial_index()
-                token_map.clear()
+                # token_map.clear()
                 return
 
 
