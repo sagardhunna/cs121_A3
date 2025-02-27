@@ -3,4 +3,5 @@ developer.zip
 analyst/
 testing.txt
 .venv
-__pychache__/
+__pycache__/
+partial_indexes/
