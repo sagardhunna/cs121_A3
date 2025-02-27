@@ -3,17 +3,18 @@ import os
 from nltk.stem import PorterStemmer
 from bs4 import BeautifulSoup
 from tokenizeAndStem import tokenize
-from collections import OrderedDict
-
+from collections import OrderedDict, defaultdict
 
 stemmer = PorterStemmer()
 file_number = 0
 total_file_number = 0
 partial_index_num = 1
 unique_keys = 0
-token_map = {}
+token_map = defaultdict(list)
 
-# creates partial index file and overwrites token_map and file_number 
+# creates partial index file and overwrites token_map and file_number
+
+
 def create_partial_index():
     global file_number, total_file_number, partial_index_num, unique_keys, token_map
 
@@ -28,11 +29,13 @@ def create_partial_index():
         if first_letter not in 'abcdefghijklmnopqrstuvwxyz0123456789':
             continue  # skips bad stuff here ^^
 
-        file_path = f"partial_indexes/index_letter_{first_letter}.txt" # this is the path that will be used
+        # this is the path that will be used
+        file_path = f"partial_indexes/index_letter_{first_letter}.txt"
 
         # Open the file in append mode ('a') to avoid overwriting
         if first_letter not in file_handles:
-            file_handles[first_letter] = open(file_path, 'a')  # the value of f that will be used to write
+            # the value of f that will be used to write
+            file_handles[first_letter] = open(file_path, 'a')
 
         f = file_handles[first_letter]  # get ^ open value up here
 
@@ -54,59 +57,30 @@ def create_partial_index():
 
 # {word: [(doc#, freq)]}
 # map with key = token and value being a set of tuples (doc, frequency)
-def main():
-    global stemmer, file_number, total_file_number, partial_index_num, unique_keys, token_map
 
-    #token_map = {}
+
+def process_file(file_path):
+    global file_number, token_map
+    with open(file_path, "r") as file:
+        # IMPLEMENT WEIGHTS OF IMPORTANCE FOR H1/H2/H3
+        jsonObj = json.load(file)
+        soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
+        visible_text = soup.getText(" ")
+        doc_name = "doc" + str(file_number + 1)
+        tokenize(visible_text, doc_name, token_map, stemmer)
+        file_number += 1
+
+
+def main():
+    global total_file_number, unique_keys
+
     for dirpath, dirnames, filenames in os.walk("developer"):
         for filename in filenames:
             actual_rel_name = os.path.join(dirpath, filename)
             if '.json' not in actual_rel_name:
                 continue
-            print(f'File we are looking at: File #{file_number}')
-            with open(actual_rel_name,"r") as file:
-                # IMPLEMENT WEIGHTS OF IMPORTANCE FOR H1/H2/H3
-                jsonObj = json.load(file) 
-                soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
-                visible_text = soup.getText(" ")
-                doc_name = "doc" + str(file_number + 1)
-                tokenize(visible_text, doc_name, token_map, stemmer)
-                file_number += 1
-                total_file_number += 1
-                # visible_text is a list of all tokens in file
-                '''
-                file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
-                token_map = OrderedDict(sorted(token_map.items()))
-                with open(file_path, 'w') as f:
-                    for key, value in token_map.items():
-                        f.write(f'{key}')
-                        for item in value:
-                            for key, value in item.items():
-                                f.write(f' {key},{value}')
-                        f.write('\n')                
-                f.close()
-                total_file_number += file_number
-                file_number = 0
-                unique_keys += len(token_map.keys())
-                token_map.clear()
-                partial_index_num += 1
-                '''
-    '''
-    file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
-    token_map = OrderedDict(sorted(token_map.items()))
-    with open(file_path, 'w') as f:
-        for key, value in token_map.items():
-            f.write(f'{key}')
-            for item in value:
-                for key, value in item.items():
-                    f.write(f' {key},{value}')
-            f.write('\n')                
-    f.close()
-    file_number = 0
-    unique_keys += len(token_map.keys())
-    token_map.clear()
-    '''
-    # file_path = 'partial_indexes/partial_index_' + str(partial_index_num) + '.txt'
+            process_file(actual_rel_name)
+
     create_partial_index()
 
     print(f'Docs indexed: {total_file_number}')

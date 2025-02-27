@@ -65,6 +65,7 @@ def main():
     main_path = "developer/aiclub_ics_uci_edu/"
     absolute_path = ["8ef6d99d9f9264fc84514cdd2e680d35843785310331e1db4bbd06dd2b8eda9b.json","9a59f63e6facdc3e5fe5aa105c603b545d4145769a107b4dc388312a85cf76d5.json","906c24a2203dd5d6cce210c733c48b336ef58293212218808cf8fb88edcecc3b.json"]
     token_map = {}
+    porter_stemmer = PorterStemmer()
     for i in range(len(absolute_path)):
         file_path = main_path + absolute_path[i]
         # the following is beign done in indexer.py, but in indexer.py we just need to call the tokenizer function
@@ -72,7 +73,7 @@ def main():
             jsonObj = json.load(file)
             soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
             visible_text = soup.getText(" ") # array of all the visible text on a page
-            tokenize(visible_text, f'doc{i}', token_map)
+            tokenize(visible_text, f'doc{i}', token_map, porter_stemmer)
     
     file.close()
 
