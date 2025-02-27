@@ -6,12 +6,13 @@ def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
     min_key = None
 
+    # Basically iterates and saves the smallest and rarest word
     for key, list_value in my_map.items():
         if len(list_value) < min_length:
             min_length = len(list_value)
             min_key = key
 
-    return min_key, min_length
+    return min_key, min_length # The rarest word with least occurence
 
 
 # this function is designed to make it more efficient to retrieve which partial index we should use to look for the term
@@ -22,20 +23,21 @@ def find_partial_file(searched_word):
     index_map = {}  # map to return
 
     for word in word_list:  # checks each query word
-        first_letter = word[0].lower()
-        file_path = f'partial_indexes/index_letter_{first_letter}.txt'
+        first_letter = word[0].lower() #find the first letter
+        file_path = f'partial_indexes/index_letter_{first_letter}.txt' # Use it to get the file name
 
+        # Open the file based on the query first letter
         with open(file_path, "r") as file:
-            for line in file:
+            for line in file: # In the file go through line by line
                 if line:
-                    words = line.split()
-                    first_word = words[0]
+                    words = line.split() # split the string into a list of words
+                    first_word = words[0] #find the first word like "this? docid, 1
 
-                if first_word == word:
-                    doc_ids = re.findall(r'doc(\d+)', line)
-                    index_map[word] = set(int(doc_id) for doc_id in doc_ids)
-                    break
-                    # print(index_map)
+                    if first_word == word: # If the searched word is the word at that line
+                        doc_ids = re.findall(r'doc(\d+)', line) #filter out all the doc ID's
+                        index_map[word] = set(int(doc_id) for doc_id in doc_ids) # Adding the word to the map
+                        break # Break loop and search for the next word
+                        # print(index_map)
 
     # Ensure all words have at least one match before performing intersection
     if len(index_map) != len(word_list):
@@ -44,7 +46,7 @@ def find_partial_file(searched_word):
     # Perform intersection to find common document IDs
     common_doc_ids = set.intersection(*index_map.values())
 
-    return common_doc_ids
+    return common_doc_ids #return a list of all the values that intersect each other
 
 
 def main():
