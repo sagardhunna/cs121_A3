@@ -48,6 +48,13 @@ def find_partial_file(searched_word):
 
     return common_doc_ids #return a list of all the values that intersect each other
 
+# it will read through the maps in the txt file and return the links associated to the ID's
+def findURLs(id_list):
+    with open("partial_indexes/id_links.txt", "r") as file:
+        for line in file:
+            print(line)
+
+
 
 def main():
     word = "research uci"

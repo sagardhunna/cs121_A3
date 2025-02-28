@@ -12,6 +12,7 @@ total_file_number = 0
 partial_index_num = 1
 unique_keys = 0
 token_map = {}
+link_id_map = {}
 
 # creates partial index file and overwrites token_map and file_number 
 def create_partial_index():
@@ -52,10 +53,15 @@ def create_partial_index():
     token_map.clear()
     partial_index_num += 1
 
+    with open("partial_indexes/id_links.txt", "w") as file:
+        for docID, link in link_id_map:
+            file.write(f' {docID},{link}')
+            file.write('\n')
+
 # {word: [(doc#, freq)]}
 # map with key = token and value being a set of tuples (doc, frequency)
 def main():
-    global stemmer, file_number, total_file_number, partial_index_num, unique_keys, token_map
+    global stemmer, file_number, total_file_number, partial_index_num, unique_keys, token_map, link_id_map
 
     #token_map = {}
     for dirpath, dirnames, filenames in os.walk("developer"):
@@ -70,6 +76,8 @@ def main():
                 soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
                 visible_text = soup.getText(" ")
                 doc_name = "doc" + str(file_number + 1)
+                url = jsonObj.get("url")
+                link_id_map[id] = url
                 tokenize(visible_text, doc_name, token_map, stemmer)
                 file_number += 1
                 total_file_number += 1
