@@ -69,6 +69,7 @@ def process_file(file_path):
         doc_name = "doc" + str(file_number + 1)
         tokenize(visible_text, doc_name, token_map, stemmer)
         file_number += 1
+        print(f"going through document: {doc_name}")
 
 
 def main():
