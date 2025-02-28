@@ -11,6 +11,8 @@ total_file_number = 0
 partial_index_num = 1
 unique_keys = 0
 token_map = defaultdict(list)
+url_map = {}
+
 
 # creates partial index file and overwrites token_map and file_number
 
@@ -55,12 +57,21 @@ def create_partial_index():
     token_map.clear()
     partial_index_num += 1
 
+
 # {word: [(doc#, freq)]}
 # map with key = token and value being a set of tuples (doc, frequency)
 
+def create_id_url():
+    global url_map
+    with open("url_id.txt", "a") as file:
+        for idNum, url in url_map.items():
+            file.write(f'{idNum}:{url}')
+            file.write('\n')
+        file.close()
+
 
 def process_file(file_path):
-    global file_number, token_map
+    global file_number, token_map, url_map
     with open(file_path, "r") as file:
         # IMPLEMENT WEIGHTS OF IMPORTANCE FOR H1/H2/H3
         jsonObj = json.load(file)
@@ -69,7 +80,12 @@ def process_file(file_path):
         doc_name = "doc" + str(file_number + 1)
         tokenize(visible_text, doc_name, token_map, stemmer)
         file_number += 1
+        url_map[file_number] = file_path[14:]
         print(f"going through document: {doc_name}")
+        # if file_number == 1000: # just for testing
+        #     create_partial_index()
+        #     create_id_url()
+        #     exit()
 
 
 def main():
@@ -81,8 +97,6 @@ def main():
             if '.json' not in actual_rel_name:
                 continue
             process_file(actual_rel_name)
-
-    create_partial_index()
 
     print(f'Docs indexed: {total_file_number}')
     print(f'Token Unique Tokens: {unique_keys}')

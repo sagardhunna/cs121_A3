@@ -5,3 +5,4 @@ testing.txt
 .venv
 __pycache__/
 partial_indexes/
+url_id.txt

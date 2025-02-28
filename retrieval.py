@@ -15,9 +15,9 @@ def find_shortest_list_key(my_map):
 
 
 # this function is designed to make it more efficient to retrieve which partial index we should use to look for the term
-# it will basically check the first word in the file and if the word is larger than the searched word currently at hand
-# it adds the document into a map with the word for the designated file,
+# it will basically check the first letter in the word and search the document that matches that letter
 def find_partial_file(searched_word):
+    searched_word = searched_word.lower()
     word_list = searched_word.strip().split(" ")  # splits search into seperate words
     index_map = {}  # map to return
 
@@ -46,10 +46,27 @@ def find_partial_file(searched_word):
 
     return common_doc_ids
 
+def findURL(list_of_matches):
+    list_of_url = []
+    list_of_matches = list(list_of_matches)
+    print(list_of_matches)
+    with open("url_id.txt", "r") as file:
+        for line in file:
+            id_line = line.strip().split(":")
+            id_num = id_line[0]
+            url = id_line[1]
+            # print(idNum)
+            if int(id_num) in list_of_matches:
+                list_of_url.append(url)
+        file.close()
+    return list_of_url
 
 def main():
-    word = "research uci"
-    print(find_partial_file(word))
+    word = input("Please enter a search query: ")
+    matched_ids = find_partial_file(word)
+    print("Here are the overlapping strings: ")
+    for links in findURL(matched_ids):
+        print(links)
 
 
 if __name__ == "__main__":
