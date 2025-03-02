@@ -46,6 +46,7 @@ def find_partial_file(searched_word):
 
     return common_doc_ids
 
+
 def findURL(list_of_matches):
     list_of_url = []
     list_of_matches = list(list_of_matches)
@@ -60,6 +61,7 @@ def findURL(list_of_matches):
                 list_of_url.append(url)
         file.close()
     return list_of_url
+
 
 def main():
     word = input("Please enter a search query: ")

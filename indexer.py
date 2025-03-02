@@ -7,7 +7,6 @@ from collections import OrderedDict, defaultdict
 
 stemmer = PorterStemmer()
 file_number = 0
-total_file_number = 0
 partial_index_num = 1
 unique_keys = 0
 token_map = defaultdict(list)
@@ -18,10 +17,10 @@ url_map = {}
 
 
 def create_partial_index():
-    global file_number, total_file_number, partial_index_num, unique_keys, token_map
+    global file_number, partial_index_num, unique_keys, token_map
 
     # ensures the directory is present
-    os.makedirs("partial_indexes", exist_ok=True)
+    os.makedirs("rough_indexes", exist_ok=True)
 
     token_map = OrderedDict(sorted(token_map.items()))  # Sort tokens
     file_handles = {}  # dictionary to manage all letters a-b and numbers 0-9 hopefully
@@ -32,7 +31,7 @@ def create_partial_index():
             continue  # skips bad stuff here ^^
 
         # this is the path that will be used
-        file_path = f"partial_indexes/index_letter_{first_letter}.txt"
+        file_path = f"rough_indexes/rough{first_letter}.txt"
 
         # Open the file in append mode ('a') to avoid overwriting
         if first_letter not in file_handles:
@@ -51,8 +50,6 @@ def create_partial_index():
     # Close all file handles
     for f in file_handles.values():
         f.close()
-    total_file_number += file_number
-    file_number = 0
     unique_keys += len(token_map.keys())
     token_map.clear()
     partial_index_num += 1
@@ -82,23 +79,26 @@ def process_file(file_path):
         file_number += 1
         url_map[file_number] = file_path[14:]
         print(f"going through document: {doc_name}")
-        # if file_number == 1000: # just for testing
-        #     create_partial_index()
-        #     create_id_url()
-        #     exit()
+        if file_number % 1000 == 0: # partializing it
+            create_partial_index()
+            create_id_url()
+            print("Making index and clearing map")
+            return
+
 
 
 def main():
-    global total_file_number, unique_keys
+    global unique_keys
 
     for dirpath, dirnames, filenames in os.walk("developer"):
         for filename in filenames:
             actual_rel_name = os.path.join(dirpath, filename)
             if '.json' not in actual_rel_name:
                 continue
-            process_file(actual_rel_name)
+            process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
+            if file_number == 2000: #just for testing
+                return exit()
 
-    print(f'Docs indexed: {total_file_number}')
     print(f'Token Unique Tokens: {unique_keys}')
     # print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
