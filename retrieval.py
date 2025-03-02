@@ -23,7 +23,7 @@ def find_partial_file(searched_word):
 
     for word in word_list:  # checks each query word
         first_letter = word[0].lower()
-        file_path = f'partial_indexes/index_letter_{first_letter}.txt'
+        file_path = f'partial_indexes/partial_index_{first_letter}.txt'
 
         with open(file_path, "r") as file:
             for line in file:
