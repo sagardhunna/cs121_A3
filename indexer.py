@@ -79,7 +79,7 @@ def process_file(file_path):
         file_number += 1
         url_map[file_number] = file_path[14:]
         print(f"going through document: {doc_name}")
-        if file_number % 1000 == 0: # partializing it
+        if file_number % 5000 == 0: # partializing it
             create_partial_index()
             create_id_url()
             print("Making index and clearing map")
