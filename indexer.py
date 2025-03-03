@@ -80,8 +80,8 @@ def process_file(file_path):
             create_partial_index()
             create_id_url()
             print("Making index and clearing map")
-            exit()
-            # return
+            # exit() #for testing
+            return
 
 
 

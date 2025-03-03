@@ -1,6 +1,5 @@
-import os
 import re
-
+from nltk.stem import PorterStemmer
 
 def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
@@ -17,11 +16,15 @@ def find_shortest_list_key(my_map):
 # this function is designed to make it more efficient to retrieve which partial index we should use to look for the term
 # it will basically check the first letter in the word and search the document that matches that letter
 def find_partial_file(searched_word):
+    stemmer = PorterStemmer()
+
     searched_word = searched_word.lower()
     word_list = searched_word.strip().split(" ")  # splits search into seperate words
+
     index_map = {}  # map to return
 
     for word in word_list:  # checks each query word
+        word = stemmer.stem(word.lower())
         first_letter = word[0].lower()
         file_path = f'partial_indexes/partial_index_{first_letter}.txt'
 
@@ -65,12 +68,14 @@ def findURL(list_of_matches):
 
 
 def main():
-    word = input("Please enter a search query: ")
-    matched_ids = find_partial_file(word)
-    print("Here are the overlapping strings: ")
-    print(matched_ids)
-    for links in findURL(matched_ids):
-        print(links)
+    for i in range(4):
+        word = input("Please enter a search query: ")
+
+        matched_ids = find_partial_file(word)
+        print("Here are the overlapping strings: ")
+        print(matched_ids)
+        for links in findURL(matched_ids):
+            print(links)
 
 
 if __name__ == "__main__":

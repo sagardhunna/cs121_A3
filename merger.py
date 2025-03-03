@@ -10,7 +10,6 @@ os.makedirs(output_folder, exist_ok=True) # making sure it exists
 letter_map = {}
 count = 0
 
-
 def merge_duplicates():
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
@@ -21,16 +20,20 @@ def merge_duplicates():
                     match = re.search(r"^\S+", line)  # searches all words in a space
                     word = match.group(0) if match else None  # finds the first one
 
+                    if word is None:
+                        continue
+
                     docs = re.findall(r"(doc\d+,\d+)", line)  # checks the doc1,1
 
                     if word not in letter_map.keys():
                         letter_map[word] = set(docs)  # starts the map
-                    letter_map[word].update(docs)  # Append list of docs
+                    else:
+                        letter_map[word].update(docs)  # Append list of docs
 
-                sorted_letter_map = {
-                    word: sorted(docs, key=lambda doc: int(re.search(r"doc(\d+)", doc).group(1)))
-                    for word, docs in sorted(letter_map.items())
-                }
+        sorted_letter_map = {
+            word: sorted(docs, key=lambda doc: int(re.search(r"doc(\d+)", doc).group(1)))
+            for word, docs in sorted(letter_map.items())
+        }
 
         for word, docs in sorted_letter_map.items():
             partial_file = os.path.join(output_folder, f"partial_index_{word[0]}.txt")
@@ -41,7 +44,9 @@ def merge_duplicates():
                     file.write(f' {doc}')
                 file.write('\n')
 
-        letter_map.clear()
+    letter_map.clear()
+
+
 def main():
     merge_duplicates()
 
