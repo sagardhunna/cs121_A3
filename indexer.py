@@ -23,33 +23,20 @@ def create_partial_index():
     os.makedirs("rough_indexes", exist_ok=True)
 
     token_map = OrderedDict(sorted(token_map.items()))  # Sort tokens
-    file_handles = {}  # dictionary to manage all letters a-b and numbers 0-9 hopefully
-
+    file = open(f"rough_indexes/rough_ind_{partial_index_num}.txt", 'w') 
+    
     for key in token_map.keys():
         first_letter = key[0].lower()  # Normalize to lowercase
         if first_letter not in 'abcdefghijklmnopqrstuvwxyz0123456789':
-            continue  # skips bad stuff here ^^
-
-        # this is the path that will be used
-        file_path = f"rough_indexes/rough{first_letter}.txt"
-
-        # Open the file in append mode ('a') to avoid overwriting
-        if first_letter not in file_handles:
-            # the value of f that will be used to write
-            file_handles[first_letter] = open(file_path, 'a')
-
-        f = file_handles[first_letter]  # get ^ open value up here
-
+            continue  # skips bad stuff here ^^         this shouldnt be needed tho? assuming tokenizer is working correctly
         # write in the values onto the letter docs
-        f.write(f'{key}')
+        file.write(f'{key}')
         for item in token_map[key]:
             for doc, freq in item.items():
-                f.write(f' {doc},{freq}')
-        f.write('\n')
-
-    # Close all file handles
-    for f in file_handles.values():
-        f.close()
+                file.write(f' {doc},{freq}')
+        file.write('\n')
+    file.close()
+        
     unique_keys += len(token_map.keys())
     token_map.clear()
     partial_index_num += 1
@@ -78,8 +65,8 @@ def process_file(file_path):
         tokenize(visible_text, doc_name, token_map, stemmer)
         file_number += 1
         url_map[file_number] = file_path[14:]
-        print(f"going through document: {doc_name}")
-        if file_number % 5000 == 0: # partializing it
+        print(f"going through document: {doc_name} (current token map size: {len(token_map.keys())})")
+        if file_number % 2500 == 0: # partializing it
             create_partial_index()
             create_id_url()
             print("Making index and clearing map")
