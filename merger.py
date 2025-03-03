@@ -10,7 +10,8 @@ def merge_duplicates():
     files = list()
     streams = list()
     iterWords = list()
-    write_file = open("merged_index.txt","wt")
+    write_file = open("merged_index_0","wt")
+    write_ltr = "0"
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
             file_path = os.path.join(folder_path, filename)
@@ -30,6 +31,15 @@ def merge_duplicates():
 
     while len(iterWords) > 0:
 
+        stop_pt = 0
+        currLine = iterWords[0][0].strip()
+        word = currLine.split()[0]
+        if not word.startswith(write_ltr):
+            write_file.close()
+            write_file = open(f"merged_index_{write_ltr}","wt")
+            write_ltr = word[:1]
+
+
         if len(iterWords)==1:
             write_file.write(iterWords[0][0].strip())
             try:
@@ -40,9 +50,8 @@ def merge_duplicates():
 
         if iterWords[0][0] > iterWords[1][0]:
             iterWords.sort(key=operator.itemgetter(0,2))
-        stop_pt = 0
-        currLine = iterWords[0][0].strip()
-        word = currLine.split()[0]
+
+
         for i in range(1,len(iterWords)):
             stop_pt+=1
             if(word != iterWords[i][0].strip().split()[0]):
