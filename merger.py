@@ -1,75 +1,47 @@
 import os
 import re
-import operator
 
 folder_path = "rough_indexes"
 
+output_folder = "partial_indexes"
+
+os.makedirs(output_folder, exist_ok=True) # making sure it exists
+
+letter_map = {}
 count = 0
 
+
 def merge_duplicates():
-    files = list()
-    streams = list()
-    iterWords = list()
-    write_file = open("merged_index_0","wt")
-    write_ltr = "0"
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
             file_path = os.path.join(folder_path, filename)
-            files.append(file_path)
-    for f in files:
-        streams.append(open(f, "r", 1, encoding="utf-8"))
-    prio = 0
-    for s in streams:
-        temp = list()
-        it = iter(s)
-        temp.append(next(it))
-        temp.append(it)
-        temp.append(prio)
-        iterWords.append(temp)
-        prio+=1
-    iterWords.sort(key=operator.itemgetter(0,2))
+            with open(file_path, "r") as file:
+                for line in file:
+                    line = line.lstrip()
+                    match = re.search(r"^\S+", line)  # searches all words in a space
+                    word = match.group(0) if match else None  # finds the first one
 
-    while len(iterWords) > 0:
+                    docs = re.findall(r"(doc\d+,\d+)", line)  # checks the doc1,1
 
-        stop_pt = 0
-        currLine = iterWords[0][0].strip()
-        word = currLine.split()[0]
-        if not word.startswith(write_ltr):
-            write_file.close()
-            write_file = open(f"merged_index_{write_ltr}","wt")
-            write_ltr = word[:1]
+                    if word not in letter_map.keys():
+                        letter_map[word] = set(docs)  # starts the map
+                    letter_map[word].update(docs)  # Append list of docs
 
+                sorted_letter_map = {
+                    word: sorted(docs, key=lambda doc: int(re.search(r"doc(\d+)", doc).group(1)))
+                    for word, docs in sorted(letter_map.items())
+                }
 
-        if len(iterWords)==1:
-            write_file.write(iterWords[0][0].strip())
-            try:
-                iterWords[0][0] = next(iterWords[0][1])
-            except StopIteration:
-                iterWords.remove(iterWords[i])
-            continue
+        for word, docs in sorted_letter_map.items():
+            partial_file = os.path.join(output_folder, f"partial_index_{word[0]}.txt")
 
-        if iterWords[0][0] > iterWords[1][0]:
-            iterWords.sort(key=operator.itemgetter(0,2))
+            with open(partial_file, "a") as file:
+                file.write(f'{word}')
+                for doc in docs:  # `docs` is a list of strings
+                    file.write(f' {doc}')
+                file.write('\n')
 
-
-        for i in range(1,len(iterWords)):
-            stop_pt+=1
-            if(word != iterWords[i][0].strip().split()[0]):
-                break
-        for i in range(1,stop_pt):
-            currLine = currLine + iterWords[i][0].strip()[len(word):]
-        write_file.write(currLine+"\n")
-        for i in range(0,stop_pt):
-            try:
-                iterWords[i][0] = next(iterWords[i][1])
-            except StopIteration:
-                iterWords.remove(iterWords[i])
-                i-=1
-
-    for s in streams:
-        s.close()
-    write_file.close()
-
+        letter_map.clear()
 def main():
     merge_duplicates()
 
