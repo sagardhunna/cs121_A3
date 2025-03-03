@@ -56,13 +56,13 @@ def findURL(list_of_matches):
 
     with open("url_id.txt", "r") as file:
         for line in file:
-            id_line = line.strip().split(":")
-            if len(id_line) < 2:  # Skip malformed lines
-                continue
-            id_num, url = int(id_line[0]), id_line[1]
+            id_line = re.match(r"(\d+):(.+)", line)
+            id_value = id_line.group(1)
+            link = str(id_line.group(2))
 
-            if id_num in list_of_matches:
-                list_of_url.add(url)  # Avoid duplicate URLs
+            if int(id_value) in list_of_matches:
+                # print(f'This is working: {id_value}')
+                list_of_url.add(link)  # Avoid duplicate URLs
 
     return list(list_of_url)  # Convert back to a list
 
@@ -72,10 +72,14 @@ def main():
         word = input("Please enter a search query: ")
 
         matched_ids = find_partial_file(word)
-        print("Here are the overlapping strings: ")
-        print(matched_ids)
+        # print("Here are the overlapping strings: ")
+        # print(matched_ids)
+        count = 0
         for links in findURL(matched_ids):
+            if count == 5:
+                break
             print(links)
+            count += 1
 
 
 if __name__ == "__main__":

@@ -74,7 +74,7 @@ def process_file(file_path):
         doc_name = "doc" + str(file_number + 1)
         tokenize(visible_text, doc_name, token_map, stemmer)
         file_number += 1
-        url_map[file_number] = file_path[14:]
+        url_map[file_number] = jsonObj.get("url")
         print(f"going through document: {doc_name} (current token map size: {len(token_map.keys())})")
         if file_number % 2500 == 0: # partializing it
             create_partial_index()
