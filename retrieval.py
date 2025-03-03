@@ -48,19 +48,20 @@ def find_partial_file(searched_word):
 
 
 def findURL(list_of_matches):
-    list_of_url = []
-    list_of_matches = list(list_of_matches)
-    print(list_of_matches)
+    list_of_matches = set(map(int, list_of_matches))  # Convert all to int
+    list_of_url = set()  # Use set to avoid duplicates
+
     with open("url_id.txt", "r") as file:
         for line in file:
             id_line = line.strip().split(":")
-            id_num = id_line[0]
-            url = id_line[1]
-            # print(idNum)
-            if int(id_num) in list_of_matches:
-                list_of_url.append(url)
-        file.close()
-    return list_of_url
+            if len(id_line) < 2:  # Skip malformed lines
+                continue
+            id_num, url = int(id_line[0]), id_line[1]
+
+            if id_num in list_of_matches:
+                list_of_url.add(url)  # Avoid duplicate URLs
+
+    return list(list_of_url)  # Convert back to a list
 
 
 def main():

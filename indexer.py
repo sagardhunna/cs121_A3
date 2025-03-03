@@ -47,11 +47,20 @@ def create_partial_index():
 
 def create_id_url():
     global url_map
+    existing_ids = set()
+
+    # read IDs to prevent duplicates if already there
+    if os.path.exists("url_id.txt"):
+        with open("url_id.txt", "r") as file:
+            for line in file:
+                existing_ids.add(line.split(":")[0])  # Store existing IDs
+
+    # append new IDs
     with open("url_id.txt", "a") as file:
         for idNum, url in url_map.items():
-            file.write(f'{idNum}:{url}')
-            file.write('\n')
-        file.close()
+            if str(idNum) not in existing_ids:
+                file.write(f'{idNum}:{url}\n')
+
     url_map.clear()
 
 
@@ -71,7 +80,8 @@ def process_file(file_path):
             create_partial_index()
             create_id_url()
             print("Making index and clearing map")
-            return
+            exit()
+            # return
 
 
 
