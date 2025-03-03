@@ -52,6 +52,7 @@ def create_id_url():
             file.write(f'{idNum}:{url}')
             file.write('\n')
         file.close()
+    url_map.clear()
 
 
 def process_file(file_path):
@@ -83,9 +84,11 @@ def main():
             if '.json' not in actual_rel_name:
                 continue
             process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
-            # if file_number == 2000: #just for testing
-            #     return exit()
-
+            
+            
+    create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
+    create_id_url()
+    print("Making final index")
     print(f'Token Unique Tokens: {unique_keys}')
     # print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
