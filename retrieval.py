@@ -67,6 +67,12 @@ def findURL(list_of_matches):
     return list(list_of_url)  # Convert back to a list
 
 
+def query_search(search):
+
+    matched_ids = find_partial_file(search)
+    return matched_ids
+
+
 def main():
     for i in range(4):
         word = input("Please enter a search query: ")
