@@ -4,7 +4,7 @@ export default function SearchBar() {
   const [query, setQuery] = useState<String>('');
   const SERVER = "http://127.0.0.1:5000"
 
-  async function getMembers() {
+  async function makeQuery() {
     const currentQuery = query.replace(/ /g, '+')
     const promise = await fetch(`${SERVER}/most-relevant?query=${currentQuery}`)
     const response = await promise.json()
@@ -25,7 +25,7 @@ export default function SearchBar() {
           className="btn btn-outline-primary"
           data-mdb-ripple-init
           onClick={() => {
-            getMembers()
+            makeQuery()
           }}
         >
           search
