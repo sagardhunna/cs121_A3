@@ -1,5 +1,12 @@
 import re
 from nltk.stem import PorterStemmer
+import os
+
+# Get the absolute path to the root CS121 directory
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # CS121
+
+# Construct the absolute path to partial_indexes folder
+PARTIAL_INDEXES_DIR = os.path.join(ROOT_DIR, "partial_indexes")
 
 def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
@@ -26,7 +33,7 @@ def find_partial_file(searched_word):
     for word in word_list:  # checks each query word
         word = stemmer.stem(word.lower())
         first_letter = word[0].lower()
-        file_path = f'partial_indexes/partial_index_{first_letter}.txt'
+        file_path = f'{PARTIAL_INDEXES_DIR}/partial_index_{first_letter}.txt'
 
         with open(file_path, "r") as file:
             for line in file:
@@ -54,7 +61,7 @@ def findURL(list_of_matches):
     list_of_matches = set(map(int, list_of_matches))  # Convert all to int
     list_of_url = set()  # Use set to avoid duplicates
 
-    with open("url_id.txt", "r") as file:
+    with open(f'{ROOT_DIR}/url_id.txt', "r") as file:
         for line in file:
             id_line = re.match(r"(\d+):(.+)", line)
             id_value = id_line.group(1)
@@ -65,6 +72,19 @@ def findURL(list_of_matches):
                 list_of_url.add(link)  # Avoid duplicate URLs
 
     return list(list_of_url)  # Convert back to a list
+
+def makeQuery(query):
+    matched_ids = find_partial_file(query)
+    top_5 = []
+    count = 0
+
+    for links in findURL(matched_ids):
+        if count == 5:
+                break
+        top_5.append(links)
+        count += 1    
+    
+    return top_5
 
 
 def main():

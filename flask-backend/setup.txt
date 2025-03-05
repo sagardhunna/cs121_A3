@@ -1,0 +1,13 @@
+# cd into flask-backend folder
+
+# Install Packages (ONLY NEED TO DO THE FIRST TIME)
+# Command on mac -> python3 -m venv venv
+# Command on windows -> python -m venv venv --- I think? not too sure
+
+# Activate the virtual environment
+# Command on mac -> source venv/bin/activate
+# Command on windows -> venv\Scripts\activate --- I think? not too sure
+
+# Install Flask (ONLY NEED TO DO THE FIRST TIME)
+# Command on mac -> pip3 install flask OR pip install flask
+# Command on windows -> pip install flask
