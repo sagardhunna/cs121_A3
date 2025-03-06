@@ -1,5 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
+from timeit import default_timer as timer
+import math
 
 import sys
 import os
@@ -29,8 +31,16 @@ def members():
 @app.route("/most-relevant")
 def findMostRelevant():
     query = request.args.get('query')
+    start = timer()
     top_5_results = retrieval.makeQuery(query)
-    return {'Results': top_5_results}
+    end = timer()
+    total_time = end - start
+    total_time = math.trunc(total_time * 1000)
+    total_time = f'{total_time} ms'
+    return {
+        'Results': top_5_results,
+        'RetrievalTime': total_time
+    }
 
 
 

@@ -1,14 +1,20 @@
 import { useState } from "react";
 
-export default function SearchBar() {
-  const [query, setQuery] = useState<String>('');
+export default function SearchBar({setLinks, setTime}) {
+  const [query, setQuery] = useState<string>('')
   const SERVER = "http://127.0.0.1:5000"
-
   async function makeQuery() {
-    const currentQuery = query.replace(/ /g, '+')
-    const promise = await fetch(`${SERVER}/most-relevant?query=${currentQuery}`)
-    const response = await promise.json()
-    console.log(response)
+    try {
+      const currentQuery = query.replace(/ /g, '+')
+      const promise = await fetch(`${SERVER}/most-relevant?query=${currentQuery}`)
+      const response = await promise.json()
+      setLinks(response.Results)
+      setTime(response.RetrievalTime)
+
+      console.log(response)
+    } catch (error) {
+      console.log("Encountered Error in MakeQuery:", error)
+    }
   }
 
   return (
@@ -29,7 +35,8 @@ export default function SearchBar() {
           }}
         >
           search
-        </button>
+        </button> 
+
       </div>
     </div>
   );
