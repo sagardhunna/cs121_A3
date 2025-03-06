@@ -14,7 +14,7 @@ PARTIAL_INDEXES_DIR = os.path.join(ROOT_DIR, "partial_indexes")
 
 def doc_count():
     count = 0
-    with open("url_id.txt", "r") as file:
+    with open(f'{ROOT_DIR}/url_id.txt', "r") as file:
         for line in file:
             count += 1
 
@@ -63,7 +63,7 @@ def find_partial_file(searched_word):
                     doc_id_tf = re.findall(r'doc(\d+),(\d+)', line)  # first we extract the frequency and id num
                     word_doc_freq[word] = len(doc_id_tf)  # the length of the list in the word is the doc freq
 
-                    print(f"Extracted (doc_id, tf) for {word}: {doc_id_tf}")
+                    # print(f"Extracted (doc_id, tf) for {word}: {doc_id_tf}")
 
                     id_tf_word_map = {}  # this map will be added to an ultimate map where we can sum words together
                     for idNum, word_freq in doc_id_tf:
@@ -78,8 +78,8 @@ def find_partial_file(searched_word):
 
                         tf_idf_final_score = log_weight * idf  # this will be the final score of that word
 
-                        print(
-                            f"Doc {docID}: tf={tf}, tf_weight={log_weight}, idf_weight={idf}, tf-idf={tf_idf_final_score}")  # Debugging print
+                        # print(
+                            # f"Doc {docID}: tf={tf}, tf_weight={log_weight}, idf_weight={idf}, tf-idf={tf_idf_final_score}")  # Debugging print
 
                         id_tf_word_map[docID] = tf_idf_final_score  # add this final score into the
 
