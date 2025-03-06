@@ -86,7 +86,7 @@ def process_file(file_path):
 
 
 def main():
-    global unique_keys
+    global unique_keys, total_documents
 
     for dirpath, dirnames, filenames in os.walk("developer"):
         for filename in filenames:
@@ -94,8 +94,7 @@ def main():
             if '.json' not in actual_rel_name:
                 continue
             process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
-            
-            
+
     create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
     create_id_url()
     print("Making final index")
