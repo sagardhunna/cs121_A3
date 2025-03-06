@@ -47,10 +47,12 @@ def find_partial_file(searched_word):
                     break
                     # print(index_map)
 
+
     # Ensure all words have at least one match before performing intersection
     if len(index_map) != len(word_list):
         return set()  # If any word is missing, return an empty set
 
+    # Here is where we should place our ranking and our sets
     # Perform intersection to find common document IDs
     common_doc_ids = set.intersection(*index_map.values())
 
