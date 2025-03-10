@@ -17,7 +17,9 @@ def doc_count():
         total_docs = file.readline()
     return int(total_docs)
 
+
 TOTAL_DOCS = doc_count()
+
 
 def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
@@ -31,27 +33,35 @@ def find_shortest_list_key(my_map):
     return min_key, min_length
 
 
+def normalize_word(word):
+    word = word.lower()
+    word = re.sub(r"[^\w\s]", "", word)  # removes apostrophes and special chars
+    return word
+
+
 def get_stop_words():
     stop_words = set()
     stemmer = PorterStemmer()
-    with open(f'{ROOT_DIR}/english_stopwords.txt', "r") as file:
-        for word in file:
-            stop_words.add(stemmer.stem(word.lower()))
-    return list(stop_words)
 
+    with open(f'{ROOT_DIR}/english_stopwords.txt', "r", encoding='utf-8') as file:
+        for word in file:
+            word_clean = normalize_word(word.strip())
+            if word_clean:
+                stop_words.add(word_clean)
+
+    return stop_words
 
 def filter_stop_words(search):
     search = search.lower()
-    word_set = set(search.strip().split(" "))  # splits search into seperate words
+    word_set = set(search.strip().split(" "))  # split query into words
     stop_word_list = get_stop_words()
 
-    stemmer = PorterStemmer()
     clean_search_words = set()
 
     for word in word_set:
-        stemmed_word = stemmer.stem(word)
-        if stemmed_word not in stop_word_list:
-            clean_search_words.add(word)
+        norm_word = normalize_word(word)
+        if norm_word not in stop_word_list:
+            clean_search_words.add(norm_word)
 
     if clean_search_words:
         return clean_search_words
