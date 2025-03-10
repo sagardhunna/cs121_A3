@@ -67,6 +67,10 @@ def find_partial_file(searched_word):
 
     word_list = filter_stop_words(searched_word)
 
+    if not word_list:
+        print("Empty search query. No terms to search.")
+        return []
+
     word_doc_freq = {}
     refined_map = {}  # this will have a map that contains word: {docID: score}
 
