@@ -48,34 +48,44 @@ def create_partial_index():
 
 def create_id_url():
     global url_map
-    existing_ids = set()
-
-    # read IDs to prevent duplicates if already there
-    if os.path.exists("url_id.txt"):
-        with open("url_id.txt", "r") as file:
-            for line in file:
-                existing_ids.add(line.split(":")[0])  # Store existing IDs
-
     # append new IDs
     with open("url_id.txt", "a") as file:
         for idNum, url in url_map.items():
-            if str(idNum) not in existing_ids:
-                file.write(f'{idNum}:{url}\n')
-
+            file.write(f'{idNum}:{url}\n')
     url_map.clear()
 
 
 def process_file(file_path):
     global file_number, token_map, url_map
     with open(file_path, "r") as file:
-        # IMPLEMENT WEIGHTS OF IMPORTANCE FOR H1/H2/H3
         jsonObj = json.load(file)
+        url = jsonObj.get("url").split("#")[0]
+        if url in url_map.values():
+            return
         soup = BeautifulSoup(jsonObj.get("content"), features="html.parser")
+        headText = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        strongText = soup.find_all('strong')
+        boldText = soup.find_all('b')
+        titleText = soup.find_all('title')
         visible_text = soup.getText(" ")
+        if len(visible_text) < 100:
+            return
+        for item in titleText:
+            for i in range(0,15):
+                visible_text = visible_text +" "+ item.getText(" ") + " "
+        for item in headText:
+            for i in range(0,8):
+                visible_text = visible_text +" "+ item.getText(" ") + " "
+        for item in strongText:
+            for i in range(0,4):
+                visible_text = visible_text +" "+ item.getText(" ") + " "
+        for item in boldText:
+            for i in range(0,2):
+                visible_text = visible_text +" "+ item.getText(" ") + " "
         doc_name = "doc" + str(file_number + 1)
         tokenize(visible_text, doc_name, token_map, stemmer)
         file_number += 1
-        url_map[file_number] = jsonObj.get("url")
+        url_map[file_number] = url
         print(f"going through document: {doc_name} (current token map size: {len(token_map.keys())})")
         if file_number % 2500 == 0: # partializing it
             create_partial_index()
@@ -104,19 +114,19 @@ def create_total_count():
 def main():
     global unique_keys
 
-    # for dirpath, dirnames, filenames in os.walk("developer"):
-    #     for filename in filenames:
-    #         actual_rel_name = os.path.join(dirpath, filename)
-    #         if '.json' not in actual_rel_name:
-    #             continue
-    #         process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
-    #
-    # create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
-    # create_id_url()
+    for dirpath, dirnames, filenames in os.walk("developer"):
+        for filename in filenames:
+            actual_rel_name = os.path.join(dirpath, filename)
+            if '.json' not in actual_rel_name:
+                continue
+            process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
+    
+    create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
+    create_id_url()
     create_total_count()  # this basically prints out the total file number
-    # print("Making final index")
-    # print(f'Token Unique Tokens: {unique_keys}')
-    # print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
+    print("Making final index")
+    print(f'Token Unique Tokens: {unique_keys}')
+    print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
 
 if __name__ == "__main__":

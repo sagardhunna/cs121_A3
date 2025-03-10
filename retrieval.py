@@ -1,15 +1,20 @@
+import json
 import re
+from bs4 import BeautifulSoup
 from nltk.stem import PorterStemmer
 import os
-import indexer
 import math
+from google import genai
 from collections import defaultdict
+import time
 
 # Get the absolute path to the root CS121 directory
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # CS121
 
 # Construct the absolute path to partial_indexes folder
 PARTIAL_INDEXES_DIR = os.path.join(ROOT_DIR, "partial_indexes")
+
+ai_docs = list()
 
 def doc_count():
     count = 0
@@ -71,6 +76,7 @@ def filter_stop_words(search):
 # this function is designed to make it more efficient to retrieve which partial index we should use to look for the term
 # it will basically check the first letter in the word and search the document that matches that letter
 def find_partial_file(searched_word):
+    global ai_docs
     stemmer = PorterStemmer()
 
     #  implement filter_stop_words here
@@ -86,6 +92,8 @@ def find_partial_file(searched_word):
 
     for word in word_list:  # checks each query word
         word = stemmer.stem(word.lower())
+        if not word:
+            continue
         first_letter = word[0].lower()
         file_path = f'{PARTIAL_INDEXES_DIR}/partial_index_{first_letter}.txt'
 
@@ -121,7 +129,7 @@ def find_partial_file(searched_word):
                         id_tf_word_map[docID] = tf_idf_final_score  # add this final score into the
 
                     refined_map[word] = id_tf_word_map
-                    print(refined_map[word])
+                    #print(refined_map[word])
                     break
 
     # Ensure all words have at least one match before performing intersection
@@ -135,8 +143,14 @@ def find_partial_file(searched_word):
     for term, docs in refined_map.items():
         for doc_id, tf_idf in docs.items():
             ranked_docs[doc_id] += tf_idf  # Sum TF-IDF scores across query terms
-
-    return sorted(ranked_docs.items(), key=lambda x: x[1], reverse=True)
+    
+    top_links = []
+    for i in range(0,5): #find top 5
+        max_item = max(ranked_docs.items(), key=lambda x: x[1])
+        top_links.append(max_item)
+        ai_docs.append(max_item[0])
+        ranked_docs.pop(max_item[0])
+    return top_links
 
 
 def findURL(list_of_matches):
@@ -157,29 +171,45 @@ def findURL(list_of_matches):
                 # print(f'This is working: {id_value}')
                 list_of_url[link] = dict(list_of_matches).get(doc_id, 0)  # Store with score
 
-                # Sort URLs based on TF-IDF scores
-    return sorted(list_of_url.items(), key=lambda x: x[1], reverse=True)
+    return list_of_url.items()
 
-
-def make_query(query):
-    matched_ids = find_partial_file(query)
-    top_5 = []
-    count = 0
-
-    for links in findURL(matched_ids):
-        if count == 5:
-            break
-        top_5.append(links)
-        count += 1
-
-    return top_5
-
+def aiSum(filenumber):
+    # textToSum = ""
+    # url_map = dict()
+    # file_number = 0
+    # for dirpath, dirnames, filenames in os.walk("developer"):
+    #     for filename in filenames:
+    #         actual_rel_name = os.path.join(dirpath, filename)
+    #         if '.json' not in actual_rel_name:
+    #             continue
+    #         with open(actual_rel_name, "r") as file:
+    #             jsonObj = json.load(file)
+    #             url = jsonObj.get("url").split("#")[0]
+    #             if url in url_map.values():
+    #                 continue
+    #             soup = BeautifulSoup(httpsContent, features="html.parser")
+    #             visible_text = soup.getText(" ")
+    #             if len(visible_text) < 100:
+    #                 continue
+    #             if filenumber == (file_number+1):
+    #                 client = genai.Client(api_key="AIzaSyC-muWK1XQU_j5B7pIhC5BZOPTmVBjSqzA")
+    #                 response = client.models.generate_content(
+    #                     model="gemini-2.0-flash",
+    #                     contents=textToSum,
+    #                 )
+    #                 return response.text
+    #             file_number += 1
+    #             print(file_number)
+    return "error with summary"
 
 def main():
+    global ai_docs
     for i in range(4):
         word = input("Please enter a search query: ")
-
+        start = time.perf_counter() #tests how long the code takes to execute
         matched_ids = find_partial_file(word)
+        end = time.perf_counter()
+        print(f'runtime: {end-start} seconds')
         # print("Here are the overlapping strings: ")
         # print(matched_ids)
         count = 0
@@ -187,6 +217,7 @@ def main():
             if count == 5:
                 break
             print(links)
+            print(aiSum(ai_docs[count]))
             count += 1
 
 
