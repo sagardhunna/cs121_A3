@@ -11,12 +11,13 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # CS121
 # Construct the absolute path to partial_indexes folder
 PARTIAL_INDEXES_DIR = os.path.join(ROOT_DIR, "partial_indexes")
 
-
 def doc_count():
     count = 0
     with open(f'{ROOT_DIR}/total_count.txt', "r") as file:
         total_docs = file.readline()
-    return total_docs
+    return int(total_docs)
+
+TOTAL_DOCS = doc_count()
 
 def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
@@ -30,14 +31,41 @@ def find_shortest_list_key(my_map):
     return min_key, min_length
 
 
+def get_stop_words():
+    stop_words = set()
+    stemmer = PorterStemmer()
+    with open(f'{ROOT_DIR}/english_stopwords.txt', "r") as file:
+        for word in file:
+            stop_words.add(stemmer.stem(word.lower()))
+    return list(stop_words)
+
+
+def filter_stop_words(search):
+    search = search.lower()
+    word_set = set(search.strip().split(" "))  # splits search into seperate words
+    stop_word_list = get_stop_words()
+
+    stemmer = PorterStemmer()
+    clean_search_words = set()
+
+    for word in word_set:
+        stemmed_word = stemmer.stem(word)
+        if stemmed_word not in stop_word_list:
+            clean_search_words.add(word)
+
+    if clean_search_words:
+        return clean_search_words
+    else:
+        return word_set
+
 # this function is designed to make it more efficient to retrieve which partial index we should use to look for the term
 # it will basically check the first letter in the word and search the document that matches that letter
 def find_partial_file(searched_word):
     stemmer = PorterStemmer()
-    total_doc_number = doc_count()
 
-    searched_word = searched_word.lower()
-    word_list = searched_word.strip().split(" ")  # splits search into seperate words
+    #  implement filter_stop_words here
+
+    word_list = filter_stop_words(searched_word)
 
     word_doc_freq = {}
     refined_map = {}  # this will have a map that contains word: {docID: score}
@@ -67,7 +95,7 @@ def find_partial_file(searched_word):
 
                         log_weight = 1 + math.log(tf) if tf > 0 else 0  # finding tf weight
 
-                        idf_numerator = int(total_doc_number) + 1  # Ensure numerator is greater than denominator
+                        idf_numerator = TOTAL_DOCS + 1  # Ensure numerator is greater than denominator
                         idf_denominator = word_doc_freq.get(word, 1)  # Avoid zero division
                         idf = math.log(idf_numerator / idf_denominator)  # Compute IDF safely
 

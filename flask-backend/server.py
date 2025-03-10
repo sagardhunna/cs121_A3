@@ -32,7 +32,7 @@ def members():
 def findMostRelevant():
     query = request.args.get('query')
     start = timer()
-    top_5_results = retrieval.makeQuery(query)
+    top_5_results = retrieval.make_query(query)
     end = timer()
     total_time = end - start
     total_time = math.trunc(total_time * 1000)
