@@ -14,15 +14,9 @@ PARTIAL_INDEXES_DIR = os.path.join(ROOT_DIR, "partial_indexes")
 
 def doc_count():
     count = 0
-    with open(f'{ROOT_DIR}/url_id.txt', "r") as file:
-        for line in file:
-            count += 1
-
-    return count
-
-
-total_doc_number = doc_count()
-
+    with open(f'{ROOT_DIR}/total_count.txt', "r") as file:
+        total_docs = file.readline()
+    return total_docs
 
 def find_shortest_list_key(my_map):
     min_length = float('inf')  # Initialize with a large value to ensure first iteration updates
@@ -40,6 +34,7 @@ def find_shortest_list_key(my_map):
 # it will basically check the first letter in the word and search the document that matches that letter
 def find_partial_file(searched_word):
     stemmer = PorterStemmer()
+    total_doc_number = doc_count()
 
     searched_word = searched_word.lower()
     word_list = searched_word.strip().split(" ")  # splits search into seperate words
@@ -72,7 +67,7 @@ def find_partial_file(searched_word):
 
                         log_weight = 1 + math.log(tf) if tf > 0 else 0  # finding tf weight
 
-                        idf_numerator = total_doc_number + 1  # Ensure numerator is greater than denominator
+                        idf_numerator = int(total_doc_number) + 1  # Ensure numerator is greater than denominator
                         idf_denominator = word_doc_freq.get(word, 1)  # Avoid zero division
                         idf = math.log(idf_numerator / idf_denominator)  # Compute IDF safely
 
@@ -124,7 +119,7 @@ def findURL(list_of_matches):
     return sorted(list_of_url.items(), key=lambda x: x[1], reverse=True)
 
 
-def makeQuery(query):
+def make_query(query):
     matched_ids = find_partial_file(query)
     top_5 = []
     count = 0

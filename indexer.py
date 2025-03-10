@@ -4,6 +4,7 @@ from nltk.stem import PorterStemmer
 from bs4 import BeautifulSoup
 from tokenizeAndStem import tokenize
 from collections import OrderedDict, defaultdict
+import re
 
 stemmer = PorterStemmer()
 file_number = 0
@@ -83,22 +84,38 @@ def process_file(file_path):
             # exit() #for testing
             return
 
-
+def create_total_count():
+    global file_number
+    if os.path.exists("url_id.txt"):
+        with open("url_id.txt", "r") as file:
+            for line in file:
+                pass
+            id_line = re.match(r"(\d+):", line)
+            total_num = id_line.group(1)
+            print(total_num)
+            with open("total_count.txt", "w") as file:
+                file.write(f'{total_num}')
+            file.close()
+    else:
+        with open("total_count.txt", "w") as file:
+            file.write(f'{file_number}')
+        file.close()
 
 def main():
-    global unique_keys, total_documents
+    global unique_keys
 
-    for dirpath, dirnames, filenames in os.walk("developer"):
-        for filename in filenames:
-            actual_rel_name = os.path.join(dirpath, filename)
-            if '.json' not in actual_rel_name:
-                continue
-            process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
-
-    create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
-    create_id_url()
-    print("Making final index")
-    print(f'Token Unique Tokens: {unique_keys}')
+    # for dirpath, dirnames, filenames in os.walk("developer"):
+    #     for filename in filenames:
+    #         actual_rel_name = os.path.join(dirpath, filename)
+    #         if '.json' not in actual_rel_name:
+    #             continue
+    #         process_file(actual_rel_name) # this will make a rough draft, we will need to compartmentalize and index
+    #
+    # create_partial_index() # run 1 last time to clear any remaining tokens out of the hashmap that we didn't hit 2500 files to partialize
+    # create_id_url()
+    create_total_count()  # this basically prints out the total file number
+    # print("Making final index")
+    # print(f'Token Unique Tokens: {unique_keys}')
     # print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
 
