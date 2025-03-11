@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function SearchBar({setLinks, setTime}) {
   const [query, setQuery] = useState<string>('')
-  const SERVER = "http://127.0.0.1:5000"
+  const SERVER = "https://cs121-a3-zr0a.onrender.com"
   async function makeQuery() {
     try {
       const currentQuery = query.replace(/ /g, '+')
