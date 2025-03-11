@@ -126,7 +126,7 @@ def main():
     create_total_count()  # this basically prints out the total file number
     print("Making final index")
     print(f'Token Unique Tokens: {unique_keys}')
-    print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
+    #print(f'Total file size: {((os.path.getsize("partial_indexes/partial_index_1.txt") + os.path.getsize("partial_indexes/partial_index_2.txt") + os.path.getsize("partial_indexes/partial_index_3.txt")) / 1000)} KB')
 
 
 if __name__ == "__main__":
