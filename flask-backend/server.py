@@ -6,6 +6,9 @@ import math
 import sys
 import os
 
+print("Server is up and running on port: http://localhost:8080/")
+
+
 # Get the parent directory (cs121)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -20,7 +23,7 @@ CORS(app)
 # Home Route
 @app.route("/")
 def home():
-    return "Welcome to search engine type shi!"
+    return "<h1>Welcome to search engine type shi!</h1>"
 
 # Members API Route
 @app.route("/members")
@@ -48,6 +51,8 @@ def findMostRelevant():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)
 
 
