@@ -23,7 +23,7 @@ CORS(app)
 # Home Route
 @app.route("/")
 def home():
-    return "<h1>Welcome to search engine type shi!</h1>"
+    return "<h1>Welcome to search engine!</h1>"
 
 # Members API Route
 @app.route("/members")
