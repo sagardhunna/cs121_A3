@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from nltk.stem import PorterStemmer
 import os
 import math
-from google import genai
+#from google import genai
 from collections import defaultdict
 import time
 
