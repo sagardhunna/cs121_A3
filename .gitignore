@@ -6,5 +6,5 @@ testing.txt
 __pycache__/
 url_id.txt
 rough_indexes/
-partial_indexes/
+partial_indexes1/
 *.pyc
