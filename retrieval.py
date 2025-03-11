@@ -1,4 +1,3 @@
-import json
 import re
 from bs4 import BeautifulSoup
 from nltk.stem import PorterStemmer
@@ -201,6 +200,20 @@ def aiSum(filenumber):
     #             file_number += 1
     #             print(file_number)
     return "error with summary"
+
+
+def make_query(query):
+     matched_ids = find_partial_file(query)
+     top_5 = []
+     count = 0
+ 
+     for links in findURL(matched_ids):
+         if count == 5:
+             break
+         top_5.append(links)
+         count += 1
+ 
+     return top_5
 
 def main():
     global ai_docs
