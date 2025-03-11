@@ -4,7 +4,6 @@ analyst/
 testing.txt
 .venv
 __pycache__/
-url_id.txt
 rough_indexes/
 partial_indexes1/
 *.pyc
