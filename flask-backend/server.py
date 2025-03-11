@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from timeit import default_timer as timer
 import math
@@ -28,7 +28,9 @@ def home():
 # Members API Route
 @app.route("/members")
 def members():
-    return {"members": ["Sagar", "Wilson", "Eric", "Aarush"]}
+    return jsonify({
+        "members": ["Sagar", "Wilson", "Eric", "Aarush"]
+    })
 
 # Retrieve Top 5 Links For Query Route
 @app.route("/most-relevant")
@@ -41,12 +43,14 @@ def findMostRelevant():
         total_time = end - start
         total_time = math.trunc(total_time * 1000)
         total_time = f'{total_time} ms'
-        return {
+        return jsonify({
             'Results': top_5_results,
             'RetrievalTime': total_time
-        }
+        })
     except Exception as e:
-        return {'Encountered error': e}
+        return jsonify({
+            'Encountered error': str(e)
+        })
 
 
 
