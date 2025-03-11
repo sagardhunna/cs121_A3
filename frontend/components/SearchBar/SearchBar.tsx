@@ -6,8 +6,11 @@ export default function SearchBar({setLinks, setTime}) {
   async function makeQuery() {
     try {
       const currentQuery = query.replace(/ /g, '+')
+      console.log('ABOUT TO MAKE PROMISE')
       const promise = await fetch(`${SERVER}/most-relevant?query=${currentQuery}`)
+      console.log("PROMISE FULFILLED, NOW CONVERTIN TO JSON", promise)
       const response = await promise.json()
+      console.log("SUCCESSFULLY CONVERTED TO JSON")
       setLinks(response.Results)
       setTime(response.RetrievalTime)
 
