@@ -25,7 +25,7 @@ def home():
 # Members API Route
 @app.route("/members")
 def members():
-    return {"members": ["Member1", "Member2", "Member3"]}
+    return {"members": ["Sagar", "Wilson", "Eric", "Aarush"]}
 
 # Retrieve Top 5 Links For Query Route
 @app.route("/most-relevant")
