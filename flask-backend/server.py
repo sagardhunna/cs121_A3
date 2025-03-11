@@ -30,17 +30,20 @@ def members():
 # Retrieve Top 5 Links For Query Route
 @app.route("/most-relevant")
 def findMostRelevant():
-    query = request.args.get('query')
-    start = timer()
-    top_5_results = retrieval.make_query(query)
-    end = timer()
-    total_time = end - start
-    total_time = math.trunc(total_time * 1000)
-    total_time = f'{total_time} ms'
-    return {
-        'Results': top_5_results,
-        'RetrievalTime': total_time
-    }
+    try:
+        query = request.args.get('query')
+        start = timer()
+        top_5_results = retrieval.make_query(query)
+        end = timer()
+        total_time = end - start
+        total_time = math.trunc(total_time * 1000)
+        total_time = f'{total_time} ms'
+        return {
+            'Results': top_5_results,
+            'RetrievalTime': total_time
+        }
+    except Exception as e:
+        return {'Encountered error': e}
 
 
 
